@@ -1,20 +1,4 @@
-import os
-from dotenv import load_dotenv
-from langchain_community.document_loaders import TextLoader
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from groq import Groq
 
-load_dotenv()
-
-ROLE_FOLDERS = {
-    "finance": ["finance"],
-    "hr": ["hr"],
-    "engineering": ["engineering"],
-    "marketing": ["marketing"],
-    "employee": ["general"],
-    "c-level": ["finance", "hr", "engineering", "marketing", "general"]
-}
 
 # ASK ROLE 
 role = input("Enter your role: ").lower()
