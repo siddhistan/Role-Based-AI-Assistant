@@ -1,4 +1,3 @@
-print("THIS IS BACKEND MAIN")
 from fastapi import FastAPI
 from pydantic import BaseModel
 
@@ -17,4 +16,3 @@ def ask_ai(request: QueryRequest):
 
     result = ask_question(request.role.lower(), request.question)
     return result
-
