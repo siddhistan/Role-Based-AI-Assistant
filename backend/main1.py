@@ -1,4 +1,3 @@
-print("THIS IS BACKEND MAIN")
 from fastapi import FastAPI
 from pydantic import BaseModel
 

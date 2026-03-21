@@ -1,7 +1,9 @@
+#imported modules for pdf and word
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.document_loaders import Docx2txtLoader
+from langchain_community.document_loaders import Docx2txtLoader  
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+#importing this function to make sure rate limit doesnot exceed
 import os
 from dotenv import load_dotenv
 
@@ -45,17 +47,17 @@ def ask_question(role, query):
                     loader = CSVLoader(filepath, encoding="utf-8")
                     documents.extend(loader.load())
                     
-            elif file.endswith(".pdf"):
+            elif file.endswith(".pdf"):                       #added pdf and word modules
                     loader = PyPDFLoader(filepath)
                     documents.extend(loader.load())
             elif file.endswith(".docx"):
                     loader = Docx2txtLoader(filepath)
                     documents.extend(loader.load())
                     
-    # ADD HERE — after loading, before embeddings
+    # Recursive splitter function: it makes sure that documents of 1500 chunks_size are loaded/retrieved to groq,instead of loading the whole documents
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50
+        chunk_size=1500,
+        chunk_overlap=100
     )
     documents = splitter.split_documents(documents)
     
@@ -76,7 +78,7 @@ def ask_question(role, query):
 
 
     #SEARCH FOR RELEVANT DOCS
-    retrieved_docs = db.similarity_search(query, k=5)
+    retrieved_docs = db.similarity_search(query, k=7)
 
     context = "\n\n".join([doc.page_content for doc in retrieved_docs])
 
@@ -104,7 +106,7 @@ def ask_question(role, query):
     """
     
     response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.2
     )

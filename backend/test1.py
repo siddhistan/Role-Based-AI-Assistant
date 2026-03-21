@@ -53,11 +53,10 @@ for folder in allowed_folders:
         elif file.endswith(".docx"):
                 loader = Docx2txtLoader(filepath)
                 documents.extend(loader.load())
-                
-# ADD HERE — after loading, before embeddings
+
 splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50
+        chunk_size=1500,
+        chunk_overlap=100
     )
 documents = splitter.split_documents(documents)
 
@@ -70,7 +69,7 @@ while True:
     if query.lower() == 'exit':
         break
     
-    retrieved_docs = db.similarity_search(query, k=5)
+    retrieved_docs = db.similarity_search(query, k=7)
     context = "\n\n".join([doc.page_content for doc in retrieved_docs])
 
     # LLM CALL
@@ -90,7 +89,7 @@ Answer clearly and concisely.
 """
 
     response = client.chat.completions.create(
-          model="llama-3.1-8b-instant",
+          model="llama-3.3-70b-versatile",
           messages=[
          {"role": "user", "content": prompt}
          ],
