@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from rag_engine1 import ask_question
+from rag_engine import ask_question
 
 app = FastAPI()
 
