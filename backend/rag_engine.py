@@ -1,3 +1,9 @@
+#imported modules for pdf and word
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import Docx2txtLoader  
+
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+#importing this function to make sure rate limit doesnot exceed
 import os
 from dotenv import load_dotenv
 
@@ -32,34 +38,49 @@ def ask_question(role, query):
         folder_path = os.path.join(BASE_PATH, folder)
 
         for file in os.listdir(folder_path):
+            filepath = os.path.join(folder_path, file)
             if file.endswith(".md"):
-                loader = TextLoader(os.path.join(folder_path, file), encoding="utf-8")
-                documents.extend(loader.load())
+                    loader = TextLoader(filepath, encoding="utf-8")
+                    documents.extend(loader.load())
+            elif file.endswith(".csv"):
+                    from langchain_community.document_loaders import CSVLoader
+                    loader = CSVLoader(filepath, encoding="utf-8")
+                    documents.extend(loader.load())
+                    
+            elif file.endswith(".pdf"):                       #added pdf and word modules
+                    loader = PyPDFLoader(filepath)
+                    documents.extend(loader.load())
+            elif file.endswith(".docx"):
+                    loader = Docx2txtLoader(filepath)
+                    documents.extend(loader.load())
+                    
+    # Recursive splitter function: it makes sure that documents of 1500 chunks_size are loaded/retrieved to groq,instead of loading the whole documents
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1500,
+        chunk_overlap=100
+    )
+    documents = splitter.split_documents(documents)
     
     #  EMBEDDINGS
     embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-    if not os.path.exists("./chroma_db"):
-        db = Chroma.from_documents(
-            documents,
-            embedding,
-            persist_directory="./chroma_db"
-        )
+    if not os.path.exists(f"./chroma_db_{role}"):
+            db = Chroma.from_documents(
+                 documents,
+                 embedding,
+                 persist_directory=f"./chroma_db_{role}"
+            )
     else:
         db = Chroma(
-            persist_directory="./chroma_db",
+            persist_directory=f"./chroma_db_{role}",
             embedding_function=embedding
         )
 
 
     #SEARCH FOR RELEVANT DOCS
-    retrieved_docs = db.similarity_search(query, k=2)
+    retrieved_docs = db.similarity_search(query, k=7)
 
-    MAX_CHARS = 4000
-
-    context = "\n\n".join(
-        [doc.page_content[:2000] for doc in retrieved_docs]
-    )[:MAX_CHARS]
+    context = "\n\n".join([doc.page_content for doc in retrieved_docs])
 
     # LLM CALL
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -83,10 +104,9 @@ def ask_question(role, query):
 
     Provide a clear, professional answer.
     """
-
-
+    
     response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+        model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.2
     )
