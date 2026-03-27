@@ -1,0 +1,26 @@
+{
+  "sid": {
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$3fvfm3Ou1fpfa825914rRQ$65aa7036y+zUhElRttguz0IhW6DVj1fU0uA0WNJRqbE",
+    "role": "finance"
+  },
+  "nishant": {
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$eO+ds/Z+7x1jzNk7pxQC4A$4mvvxhPOExODslkasMbi+YqWsf0QD0/xHG29juTDstI",
+    "role": "hr"
+  },
+  "khushi": {
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$OWfM+T+ntLY2ppRyDoGwtg$hvasnJK7ANNyS423LoPJpy9XOjfUJoGRmefLGDSXxrE",
+    "role": "engineering"
+  },
+  "kavya": {
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$8X4PoVRKCeEc45zTOsfYOw$cxcS3L6Pf33XRqL4JcD5TEGY0DTcfU0Gt07YrHl2ugk",
+    "role": "marketing"
+  },
+  "arjun": {
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$ZCzFOCckJERoLWUsxXgvZQ$QANudZSbknppI33hc24rtCOieSzgESkvYlQdZgIOxEs",
+    "role": "employee"
+  },
+  "leo": {
+    "password": "$argon2id$v=19$m=65536,t=3,p=4$NUbovVdKyRkjBKBUKmVMKQ$wmn1UZdgl8z2FxJUVx4U143vsbza9rj/43hIZxsxxf4",
+    "role": "c-level"
+  }
+}
