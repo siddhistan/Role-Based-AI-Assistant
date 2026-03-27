@@ -4,3 +4,6 @@ __pycache__/
 chroma_db/
 *.pyc
 .cache/
+echo "chroma_db_*" >> .gitignore
+echo "*.hash" >> .gitignore
+git add .gitignore
