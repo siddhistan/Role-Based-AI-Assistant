@@ -4,6 +4,8 @@ __pycache__/
 chroma_db/
 *.pyc
 .cache/
-echo "chroma_db_*" >> .gitignore
-echo "*.hash" >> .gitignore
-git add .gitignore
+
+backend/chroma_db/
+backend/chroma_db_hr/
+backend/chroma_db_marketing/
+backend/chroma_db*/
