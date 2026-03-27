@@ -1,104 +1,55 @@
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.document_loaders import Docx2txtLoader
-
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 import os
 from dotenv import load_dotenv
-from langchain_community.document_loaders import TextLoader
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from groq import Groq
+from rag_engine import ask_question, ROLE_FOLDERS
 
 load_dotenv()
 
-ROLE_FOLDERS = {
-    "finance": ["finance"],
-    "hr": ["hr"],
-    "engineering": ["engineering"],
-    "marketing": ["marketing"],
-    "employee": ["general"],
-    "c-level": ["finance", "hr", "engineering", "marketing", "general"]
-}
+# ── Role selection ────────────────────────────────────────────────────────────
+print("\n" + "="*55)
+print("  FinSolve Technologies — Enterprise AI Assistant")
+print("="*55)
+print(f"\nAvailable roles: {', '.join(sorted(ROLE_FOLDERS.keys()))}")
 
-# ASK ROLE 
-role = input("Enter your role: ").lower()
+role = input("\nEnter your role: ").strip()
 
-if role not in ROLE_FOLDERS:
-    print("Invalid role.")
+# Quick pre-check for friendly message
+# Full RBAC enforcement happens inside ask_question() via enforce_rbac()
+if role.strip().lower() not in ROLE_FOLDERS:
+    print(f"\nInvalid role: '{role}'")
+    print(f"Valid roles: {', '.join(sorted(ROLE_FOLDERS.keys()))}")
     exit()
 
-print(f"\nAccess granted for role: {role}\n")
+print(f"\nAccess granted for role: {role.lower()}")
+print("ChromaDB loading... (first run may take a minute)\n")
 
-#  LOAD ONLY ALLOWED DOCS
-BASE_PATH = "../data"
-documents = []
-
-allowed_folders = ROLE_FOLDERS[role]
-
-for folder in allowed_folders:
-    folder_path = os.path.join(BASE_PATH, folder)
-
-    for file in os.listdir(folder_path):
-        filepath = os.path.join(folder_path, file)
-        if file.endswith(".md"):
-                loader = TextLoader(filepath, encoding="utf-8")
-                documents.extend(loader.load())
-        elif file.endswith(".csv"):
-                from langchain_community.document_loaders import CSVLoader
-                loader = CSVLoader(filepath, encoding="utf-8")
-                documents.extend(loader.load())
-        elif file.endswith(".pdf"):
-                loader = PyPDFLoader(filepath)
-                documents.extend(loader.load())
-        elif file.endswith(".docx"):
-                loader = Docx2txtLoader(filepath)
-                documents.extend(loader.load())
-
-splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1500,
-        chunk_overlap=100
-    )
-documents = splitter.split_documents(documents)
-
-#  EMBEDDINGS
-embedding = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-db = Chroma.from_documents(documents, embedding)
-
+# ── Chat loop ─────────────────────────────────────────────────────────────────
 while True:
-    query = input("\nAsk your question (or type 'exit' to quit): ")
-    if query.lower() == 'exit':
+    query = input("\nAsk your question (or type 'exit' to quit): ").strip()
+
+    if query.lower() == "exit":
+        print("\nGoodbye!")
         break
-    
-    retrieved_docs = db.similarity_search(query, k=7)
-    context = "\n\n".join([doc.page_content for doc in retrieved_docs])
 
-    # LLM CALL
-    client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+    if not query:
+        print("Please enter a question.")
+        continue
 
-    prompt = f"""
-You are an internal company assistant.
-Answer the question ONLY using the context below.
+    # Full improved pipeline:
+    #   enforce_rbac()
+    #   → get_or_build_vectorstore() with hash-based auto-rebuild
+    #   → load_documents() with metadata prefix (collision fix)
+    #   → MMR search (diversity across quarters)
+    #   → Groq LLaMA answer generation
+    result = ask_question(role, query, debug=True)
 
-Context:
-{context}
+    print("\n" + "-"*55)
+    print("ANSWER:\n")
+    print(result["answer"])
 
-Question:
-{query}
-
-Answer clearly and concisely.
-"""
-
-    response = client.chat.completions.create(
-          model="llama-3.3-70b-versatile",
-          messages=[
-         {"role": "user", "content": prompt}
-         ],
-         temperature=0.2
-    )
-
-    print("\n Answer:\n")
-    print(response.choices[0].message.content)
-
-    print("\n Sources:\n")
-    for doc in retrieved_docs:
-           print(doc.metadata.get("source"))
+    print("\nSOURCES:")
+    if result["sources"]:
+        for source in result["sources"]:
+            print(f"  - {source}")
+    else:
+        print("  No sources found.")
+    print("-"*55)
