@@ -1,0 +1,68 @@
+{
+    "sid": {
+        "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$3fvfm3Ou1fpfa825914rRQ$65aa7036y+zUhElRttguz0IhW6DVj1fU0uA0WNJRqbE",
+        "role": "finance",
+        "failed_attempts": 0,
+        "lock_until": 1774627789.0596557,
+        "lock_count": 1,
+        "last_failed_login": 1774626889.0596557,
+        "refresh_token": "",
+        "refresh_token_expiry": 0,
+        "session_start": 0
+    },
+    "nishant": {
+        "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$eO+ds/Z+7x1jzNk7pxQC4A$4mvvxhPOExODslkasMbi+YqWsf0QD0/xHG29juTDstI",
+        "role": "hr",
+        "failed_attempts": 0,
+        "lock_until": 0,
+        "lock_count": 0,
+        "last_failed_login": 1774627001.1109667,
+        "refresh_token": "a61d34efdae9b31e09cd58e9a02b2c1dbc926720bec32c52a0a0c69e381f034e",
+        "refresh_token_expiry": 1775545522.7273755,
+        "session_start": 0
+    },
+    "khushi": {
+        "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$OWfM+T+ntLY2ppRyDoGwtg$hvasnJK7ANNyS423LoPJpy9XOjfUJoGRmefLGDSXxrE",
+        "role": "engineering",
+        "failed_attempts": 0,
+        "lock_until": 0,
+        "lock_count": 0,
+        "last_failed_login": 0,
+        "refresh_token": "",
+        "refresh_token_expiry": 0,
+        "session_start": 0
+    },
+    "kavya": {
+        "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$8X4PoVRKCeEc45zTOsfYOw$cxcS3L6Pf33XRqL4JcD5TEGY0DTcfU0Gt07YrHl2ugk",
+        "role": "marketing",
+        "failed_attempts": 0,
+        "lock_until": 0,
+        "lock_count": 0,
+        "last_failed_login": 1774960647.2656093,
+        "refresh_token": "af56bab237785a4bcdd7aa7f6ba180b662a6e2501c5dbfa793ab053b195f9dcb",
+        "refresh_token_expiry": 1774978435.9634912,
+        "session_start": 1774978263.159681
+    },
+    "arjun": {
+        "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$ZCzFOCckJERoLWUsxXgvZQ$QANudZSbknppI33hc24rtCOieSzgESkvYlQdZgIOxEs",
+        "role": "employee",
+        "failed_attempts": 0,
+        "lock_until": 0,
+        "lock_count": 0,
+        "last_failed_login": 0,
+        "refresh_token": "93ea6bb79ad749ba7b211f0f81bc86b0146c3fc8e9a9a9ca014afe63527b20ff",
+        "refresh_token_expiry": 1774993605.1632488,
+        "session_start": 1774993432.3592517
+    },
+    "leo": {
+        "password_hash": "$argon2id$v=19$m=65536,t=3,p=4$NUbovVdKyRkjBKBUKmVMKQ$wmn1UZdgl8z2FxJUVx4U143vsbza9rj/43hIZxsxxf4",
+        "role": "c-level",
+        "failed_attempts": 0,
+        "lock_until": 0,
+        "lock_count": 0,
+        "last_failed_login": 0,
+        "refresh_token": "",
+        "refresh_token_expiry": 0,
+        "session_start": 0
+    }
+}
